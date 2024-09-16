@@ -1,5 +1,8 @@
 <?php
 
+// https://www.php.net/manual/en/book.pdo.php
+// https://console.neon.tech/app/projects/cool-lab-76158961?database=yolo
+
 class Query {
   const SQL_QUERY_CURRENT_DATABASE = 'select current_database()';
   const SQL_QUERY_GET_CUSTOMER = 'select * from customers limit 1';
