@@ -6,8 +6,9 @@
 class Query {
   const SQL_QUERY_CURRENT_DATABASE = 'select current_database()';
   const SQL_QUERY_GET_CUSTOMER = 'select * from customers limit 1';
-  const SQL_QUERY_GET_SALESPEOPLE = 'select * from salespeople';
-  const SQL_QUERY_GET_SNAME_AND_COMM_FROM_SALESPEOPLE = 'select sname, comm from salespeople';
+  const SQL_QUERY_GET_ALL_SALESPEOPLE = 'select * from salespeople';
+  const SQL_QUERY_GET_SALESPEOPLE_INFO = 'select sname, comm from salespeople';
+  const SQL_QUERY_GET_SALESPEOPLE_SHUFFLE = 'select sname, comm from salespeople';
   
   private \PDO $db;
 
@@ -32,28 +33,33 @@ class Query {
   public function getCustomer() {
     $statement = $this->db->query(self::SQL_QUERY_GET_CUSTOMER);
     $statement->execute();
-    $customers = $statement->fetchAll();
-    return $customers[0];
+    $result = $statement->fetchAll();
+    return $result[0];
   }
 
-  public function getSalespeople() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_SALESPEOPLE);
+  public function getAllSalespeople() {
+    $statement = $this->db->query(self::SQL_QUERY_GET_ALL_SALESPEOPLE);
     $statement->execute();
-    $salespeople = $statement->fetchAll();
-    return $salespeople;
+    $result = $statement->fetchAll();
+    return $result;
   }
   
-  public function getSnameCommFromSalespeople() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_SNAME_AND_COMM_FROM_SALESPEOPLE);
+  public function getSalespeopleInfo() {
+    $statement = $this->db->query(self::SQL_QUERY_GET_SALESPEOPLE_INFO);
     $statement->execute();
-    $someSalespeople = $statement->fetchAll();
-    return $someSalespeople;
+    $result = $statement->fetchAll();
+    return $result;
   }
 }
 
 $query = Query::create();
 ?>
+<p>All Salespeople</p>
 <pre>
-  <?php //print_r($query->getSalespeople()) ?>
-  <?php print_r($query->getSnameCommFromSalespeople()) ?>
+  <?php print_r($query->getAllSalespeople()) ?>
+</pre>
+
+<p>Salespeople Info</p>
+<pre>
+  <?php print_r($query->getSalespeopleInfo()) ?>
 </pre>
