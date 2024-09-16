@@ -36,10 +36,10 @@ class Query {
   }
 
   public function getSalespeople() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_SALESPEOPLE);
-    $statement->execute();
-    $customers = $statement->fetchAll();
-    return $customers;
+    $salespeople = $this->db->query(self::SQL_QUERY_GET_SALESPEOPLE);
+    $salespeople->execute();
+    $salespeople = $statement->fetchAll();
+    return $salespeople;
   }
 }
 
