@@ -8,7 +8,8 @@ class Query {
   const SQL_QUERY_GET_CUSTOMER = 'select * from customers limit 1';
   const SQL_QUERY_GET_ALL_SALESPEOPLE = 'select * from salespeople';
   const SQL_QUERY_GET_SALESPEOPLE_INFO = 'select sname, comm from salespeople';
-  const SQL_QUERY_GET_SALESPEOPLE_SHUFFLE = 'select sname, comm from salespeople';
+  const SQL_QUERY_GET_ALL_ORDERS = 'select * from orders';
+  const SQL_QUERY_GET_SHUFFLE_ORDERS = 'select odate, snum, onum, amt from orders';
   
   private \PDO $db;
 
@@ -50,6 +51,20 @@ class Query {
     $result = $statement->fetchAll();
     return $result;
   }
+  
+  public function getAllOrders() {
+    $statement = $this->db->query(self::SQL_QUERY_GET_ALL_ORDERS);
+    $statement->execute();
+    $result = $statement->fetchAll();
+    return $result;
+  }
+
+  public function getShuffleOrders() {
+    $statement = $this->db->query(self::SQL_QUERY_GET_SHUFFLE_ORDERS);
+    $statement->execute();
+    $result = $statement->fetchAll();
+    return $result;
+  }
 }
 
 $query = Query::create();
@@ -62,4 +77,14 @@ $query = Query::create();
 <p>Salespeople Info</p>
 <pre>
   <?php print_r($query->getSalespeopleInfo()) ?>
+</pre>
+
+<p>All Orders</p>
+<pre>
+  <?php print_r($query->getAllOrders()) ?>
+</pre>
+
+<p>Shuffle Orders</p>
+<pre>
+  <?php print_r($query->getShuffleOrders()) ?>
 </pre>
