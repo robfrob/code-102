@@ -7,6 +7,7 @@ class Query {
   const SQL_QUERY_CURRENT_DATABASE = 'select current_database()';
   const SQL_QUERY_GET_CUSTOMER = 'select * from customers limit 1';
   const SQL_QUERY_GET_SALESPEOPLE = 'select * from salespeople';
+  const SQL_QUERY_GET_SNAME_AND_COMM_FROM_SALESPEOPLE = 'select sname, comm from salespeople';
   
   private \PDO $db;
 
@@ -15,15 +16,15 @@ class Query {
   }
 
   public static function create() {
-    $dsn = getenv('PG_DSN');          // getenv?! $dsn - строка вида 'mysql:host=localhost;dbname=test'
-    $db = new PDO($dsn);              // установка соеденения с бд. $dsn - параметр конструктора
-    $query = new Query($db);          // целый объект PDO параметр констурктора?!
+    $dsn = getenv('PG_DSN');          // secrets в репле
+    $db = new PDO($dsn);              
+    $query = new Query($db);          
     return $query;
   }
 
   public function getCurrentDatabase() {
-    $statement = $this->db->query(self::SQL_QUERY_CURRENT_DATABASE);   // 
-    $statement->execute();      // выполняем запрос
+    $statement = $this->db->query(self::SQL_QUERY_CURRENT_DATABASE);
+    $statement->execute();
     $currentDatabase = $statement->fetchColumn();
     return $currentDatabase;
   }
@@ -41,10 +42,18 @@ class Query {
     $salespeople = $statement->fetchAll();
     return $salespeople;
   }
+  
+  public function getSnameCommFromSalespeople() {
+    $statement = $this->db->query(self::SQL_QUERY_GET_SNAME_AND_COMM_FROM_SALESPEOPLE);
+    $statement->execute();
+    $someSalespeople = $statement->fetchAll();
+    return $someSalespeople;
+  }
 }
 
 $query = Query::create();
 ?>
 <pre>
-  <?php print_r($query->getSalespeople()) ?>
+  <?php //print_r($query->getSalespeople()) ?>
+  <?php print_r($query->getSnameCommFromSalespeople()) ?>
 </pre>
