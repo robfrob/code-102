@@ -26,27 +26,27 @@ class Queries {
 class Db {
    
   private \PDO $pdo;
-  private array $queries;
+  private \Queries $queries;
 
-  public function __construct($db) {
-    // в конструктор пробрось об'ект класса queries
-    // и добавь приватное поле queries
-    // по итогу єтот класс Db будет содержать 2 приватних поля
-    // 1е - pdo - соедениене с бд
-    // 2е - queries - ассоц массив sql запросов
-    new Queries();
-    $this->db = $db;
+  public function __construct($pdo, $queries) {
+    $this->pdo = $pdo;
+    $this->queries = $queries;
   }
 
   public static function create() {
     $dsn = getenv('PG_DSN');
-    $db = new PDO($dsn);              
-    $query = new Db($db);          
+    $pdo = new PDO($dsn); 
+    $queries = new Queries();
+    $query = new Db($pdo, $queries);          
     return $query;
   }
 
+  public static function runSqlQueries() {
+    
+  }
+  
+
   public function getCurrentDatabase() {
-    // вот тут вместо константи класса используй свой класс Queries
     $queryName = 'get_current_database';
     $sqlText = $this->queries->get($queryName);
     $statement = $this->pdo->query($sqlText);
@@ -69,7 +69,8 @@ $query = Db::create();
 <!--
 вот єтот кусок сделай циклом по методам класса 
 цикл (Метод в ВсеПубличниеМетодиКлассаКромеКонструктора)
-  <p>Имя метода разделенное пробелами</p>
+  
+    <p>Имя метода разделенное пробелами</p>
   <pre>print_r(реузльтат вьізова метода) </pre>
 конецЦикла
 
