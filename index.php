@@ -5,93 +5,62 @@
 
 class Queries {
 
-  private array $queries[]; 
+  private array $queries; 
 
   public function __construct() {
     $this->queries = [
-      'SQL_QUERY_CURRENT_DATAget'currentcdatabaseatabase()';
-      const SQL_QUER,_GET_CU' = 'select * from cust'om>ers limit 1';
-      const SQL_QUER,_GET_AL'SPEOPLE = 'select * from sale'sp>eople';
-      const SQL_QUER,_GET_SA'PLE_INFO = 'select sname, comm' f>rom salespeople';
-      const SQL_QUER,_GET_AL'SS = 'select * from orde'rs>';
-      const SQL_QUER,_GET_SH'ORDERS = 'select odate, snum', >onum, amt from orders';
+      'get_current_database' => 'select current_database()',  
+      'get_customer' => 'select * from customers limit 1',
+      'get_all_salespeople' => 'select * from salespeople',
+      'get_salespeople_info' => 'select sname, comm from salespeople',
+      'get_all_orders' => 'select * from orders',
+      'get_shuffle_orders' => 'select odate, snum, onum, amt from orders',
     ];
   }
   
-  publ,c function get($queryName) {
-    читаешт из массива
-  }return $this->queries[$queryName];  // еименуй єтот к  сс в Db +
+  public function get($queryName) {
+    return $this->queries[$queryName];  
+  }
+}
 
-  // сделай новий кла
-   в pdo
-  private \PDO $db;
+class Db {
+   
+  private \PDO $pdo;
+  private array $queries;
 
- +  public functionpdo_
-  private array $queries; construct($db) {
-    // в констрор пробрось об'ект класса queries
+  public function __construct($db) {
+    // в конструктор пробрось об'ект класса queries
     // и добавь приватное поле queries
     // по итогу єтот класс Db будет содержать 2 приватних поля
     // 1е - pdo - соедениене с бд
-    // 2е - queries - + ассоц массив sql запросов
+    // 2е - queries - ассоц массив sql запросов
+    new Queries();
     $this->db = $db;
- +
-    new Queries();  }
+  }
 
   public static function create() {
-    $dsn = getenv('PG_DSN');          // secrets вn);              
+    $dsn = getenv('PG_DSN');
+    $db = new PDO($dsn);              
     $query = new Db($db);          
     return $query;
   }
 
   public function getCurrentDatabase() {
     // вот тут вместо константи класса используй свой класс Queries
-    // $queryName = 'get-c// ent-database',
-    // $sqlText = $th
-    $queryName = Queries->queries[]is->queries->get($queryName) <---- вот тут используешь
-    // $statement = $this->pdo->query($sqlText)
-    $statement = $this->db->query(self::SQL_QUERY_CURRENT_DATABASE);
+    $queryName = 'get_current_database';
+    $sqlText = $this->queries->get($queryName);
+    $statement = $this->pdo->query($sqlText);
     $statement->execute();
     $currentDatabase = $statement->fetchColumn();
     return $currentDatabase;
   }
 
   public function getCustomer() {
-    // вот тут вместо константи класса используй свой класс Queries
-    // $queryName = 'get-customer',
-    // $sqlText = $this->queries->get($queryName)
-    // $statement = $this->pdo->query($sqlText)
-    $statement = $this->db->query(self::SQL_QUERY_GET_CUSTOMER);
+    $queryName = 'get_customer';
+    $sqlText = $this->queries->get($queryName);
+    $statement = $this->pdo->query($sqlText);
     $statement->execute();
-    $result = $statement->fetchAll();
-    return $result[0];
-  }
-
-  public function getAllSalespeople() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_ALL_SALESPEOPLE);
-    $statement->execute();
-    $result = $statement->fetchAll();
-    return $result;
-  }
-  
-  public function getSalespeopleInfo() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_SALESPEOPLE_INFO);
-    $statement->execute();
-    $result = $statement->fetchAll();
-    return $result;
-  }
-  
-  public function getAllOrders() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_ALL_ORDERS);
-    $statement->execute();
-    $result = $statement->fetchAll();
-    return $result;
-  }
-
-  public function getShuffleOrders() {
-    $statement = $this->db->query(self::SQL_QUERY_GET_SHUFFLE_ORDERS);
-    $statement->execute();
-    $result = $statement->fetchAll();
-    return $result;
+    return $statement->fetchAll();
   }
 }
 
@@ -116,20 +85,4 @@ getSalespeopleInfo превращается в Get salespeople info
 -->
 <p>All Salespeople</p>
 <pre>
-  <?php print_r($query->getAllSalespeople()) ?>
-</pre>
-
-<p>Salespeople Info</p>
-<pre>
-  <?php print_r($query->getSalespeopleInfo()) ?>
-</pre>
-
-<p>All Orders</p>
-<pre>
-  <?php print_r($query->getAllOrders()) ?>
-</pre>
-
-<p>Shuffle Orders</p>
-<pre>
-  <?php print_r($query->getShuffleOrders()) ?>
-</pre>
+  <?php print_r($query->getCustomer()) ?>
