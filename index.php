@@ -4,64 +4,50 @@
 // https://console.neon.tech/app/projects/cool-lab-76158961?database=yolo
 
 class Queries {
-  
-  private array $queries = ['' => '',];
+
+  private array $queries[]; 
 
   public function __construct() {
-    
-  }
-
-  public static function getQueryName() {
-    
+    $this->queries = [
+      'SQL_QUERY_CURRENT_DATAget'currentcdatabaseatabase()';
+      const SQL_QUER,_GET_CU' = 'select * from cust'om>ers limit 1';
+      const SQL_QUER,_GET_AL'SPEOPLE = 'select * from sale'sp>eople';
+      const SQL_QUER,_GET_SA'PLE_INFO = 'select sname, comm' f>rom salespeople';
+      const SQL_QUER,_GET_AL'SS = 'select * from orde'rs>';
+      const SQL_QUER,_GET_SH'ORDERS = 'select odate, snum', >onum, amt from orders';
+    ];
   }
   
-}
+  publ,c function get($queryName) {
+    читаешт из массива
+  }return $this->queries[$queryName];  // еименуй єтот к  сс в Db +
 
-class Db {
-  // переименуй єтот класс в Db +
-
-  // сделай новий класс Queries +
-  // в котором будет приватное поле массив +
-  // ключ в массиве - єто строка - имя sql запроса
-  // значение в массиве - єто строка - текст sql запроса
-  // 
-  // добавь метод get(queryName)
-  // которий принимает строку имя sql запроса
-  // и возвращает текст sql запроса
-  // то есть по сути читает из массива всех запросов
-  // и перенеси все єти константи в новий класс
-  // инициализируй массив в конструкторе класса Queries
-  
-  const SQL_QUERY_CURRENT_DATABASE = 'select current_database()';
-  const SQL_QUERY_GET_CUSTOMER = 'select * from customers limit 1';
-  const SQL_QUERY_GET_ALL_SALESPEOPLE = 'select * from salespeople';
-  const SQL_QUERY_GET_SALESPEOPLE_INFO = 'select sname, comm from salespeople';
-  const SQL_QUERY_GET_ALL_ORDERS = 'select * from orders';
-  const SQL_QUERY_GET_SHUFFLE_ORDERS = 'select odate, snum, onum, amt from orders';
-
-  // єто поле переименуй в pdo
+  // сделай новий кла
+   в pdo
   private \PDO $db;
 
-  public function __construct($db) {
-    // в конструктор пробрось об'ект класса queries
+ +  public functionpdo_
+  private array $queries; construct($db) {
+    // в констрор пробрось об'ект класса queries
     // и добавь приватное поле queries
     // по итогу єтот класс Db будет содержать 2 приватних поля
     // 1е - pdo - соедениене с бд
-    // 2е - queries - ассоц массив sql запросов
+    // 2е - queries - + ассоц массив sql запросов
     $this->db = $db;
-  }
+ +
+    new Queries();  }
 
   public static function create() {
-    $dsn = getenv('PG_DSN');          // secrets в репле
-    $db = new PDO($dsn);              
+    $dsn = getenv('PG_DSN');          // secrets вn);              
     $query = new Db($db);          
     return $query;
   }
 
   public function getCurrentDatabase() {
     // вот тут вместо константи класса используй свой класс Queries
-    // $queryName = 'get-current-database',
-    // $sqlText = $this->queries->get($queryName)
+    // $queryName = 'get-c// ent-database',
+    // $sqlText = $th
+    $queryName = Queries->queries[]is->queries->get($queryName) <---- вот тут используешь
     // $statement = $this->pdo->query($sqlText)
     $statement = $this->db->query(self::SQL_QUERY_CURRENT_DATABASE);
     $statement->execute();
