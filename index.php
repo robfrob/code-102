@@ -37,18 +37,24 @@ class Db {
     $dsn = getenv('PG_DSN');
     $pdo = new PDO($dsn); 
     $queries = new Queries();
-    $query = new Db($pdo, $queries);          
-    return $query;
+    $Db = new Db($pdo, $queries);          
+    return $Db;
   }
 
-  public static function runSqlQueries() {
-    
+  public function runSqlQueries() {
+    $classMethods = get_class_methods($this);
+    foreach ($classMethods as $methodName) {
+      if (strpos($methodName, 'get') === 0) {
+        echo '<p>' . $methodName . '</p>';
+        echo '<pre>';
+        print_r(call_user_func(array($this, $methodName)));
+        echo '</pre>';
+      }
+    }
   }
   
-
   public function getCurrentDatabase() {
-    $queryName = 'get_current_database';
-    $sqlText = $this->queries->get($queryName);
+    $sqlText = $this->queries->get('get_current_database');
     $statement = $this->pdo->query($sqlText);
     $statement->execute();
     $currentDatabase = $statement->fetchColumn();
@@ -56,15 +62,16 @@ class Db {
   }
 
   public function getCustomer() {
-    $queryName = 'get_customer';
-    $sqlText = $this->queries->get($queryName);
+    $sqlText = $this->queries->get('get_customer');
     $statement = $this->pdo->query($sqlText);
     $statement->execute();
     return $statement->fetchAll();
   }
 }
 
-$query = Db::create();
+$Db = Db::create();
+$Db->runSqlQueries();
+//$Db->renderSqlQueries();
 ?>
 <!--
 вот єтот кусок сделай циклом по методам класса 
@@ -84,6 +91,3 @@ getSalespeopleInfo превращается в Get salespeople info
 потом погугли как преобразовать строку из camelCase в underscoreCase 
 и сделать первую букву в имени метода заглавной
 -->
-<p>All Salespeople</p>
-<pre>
-  <?php print_r($query->getCustomer()) ?>
