@@ -44,7 +44,7 @@ class Db {
   public function runSqlQueries() {
     $classMethods = get_class_methods($this);
     foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'get') === 0) {
+      if (strpos($methodName, 'get') === 0) {    // нас интересуют только геттеры
         echo '<p>' . $methodName . '</p>';
         echo '<pre>';
         print_r(call_user_func(array($this, $methodName)));
@@ -57,8 +57,7 @@ class Db {
     $sqlText = $this->queries->get('get_current_database');
     $statement = $this->pdo->query($sqlText);
     $statement->execute();
-    $currentDatabase = $statement->fetchColumn();
-    return $currentDatabase;
+    return $statement->fetchColumn();
   }
 
   public function getCustomer() {
@@ -67,23 +66,41 @@ class Db {
     $statement->execute();
     return $statement->fetchAll();
   }
+
+  public function getAllSalespeople() {
+    $sqlText = $this->queries->get('get_all_salespeople');
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+
+  public function getSalespeopleInfo() {
+    $sqlText = $this->queries->get('get_salespeople_info');
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+
+  public function getAllOrders() {
+    $sqlText = $this->queries->get('get_all_orders');
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+
+  public function getShuffleOrders() {
+    $sqlText = $this->queries->get('get_shuffle_orders');
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+ 
 }
 
 $Db = Db::create();
 $Db->runSqlQueries();
-//$Db->renderSqlQueries();
 ?>
 <!--
-вот єтот кусок сделай циклом по методам класса 
-цикл (Метод в ВсеПубличниеМетодиКлассаКромеКонструктора)
-  
-    <p>Имя метода разделенное пробелами</p>
-  <pre>print_r(реузльтат вьізова метода) </pre>
-конецЦикла
-
-и кусок штмл помести в статический метод класса Db
-c именем runSqlQueries
-
 getAllSalespeople превращается в Get all salespeople
 getSalespeopleInfo превращается в Get salespeople info
 
