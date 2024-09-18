@@ -46,20 +46,27 @@ class Db {
 
     for ($i = 0; $i < strlen($camelCase); $i++) { 
         if (ctype_upper($camelCase[$i])) { 
-          $snakeCase .= '_' . strtolower($camelCase[$i]); 
+          $snakeCase .= ' ' . strtolower($camelCase[$i]); 
         } else { 
           $snakeCase.= $camelCase[$i]; 
         } 
     } 
 
-    $snakeCase = ltrim($snakeCase, '_');
+    $snakeCase = ltrim($snakeCase, ' ');
     return ucfirst($snakeCase); 
+  }
+
+  private function getResponse($sqlQuery) {
+    $sqlText = $this->queries->get($sqlQuery);
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
   }
 
   public function runSqlQueries() {
     $classMethods = get_class_methods($this);
     foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'get') === 0) {    // нас интересуют только геттеры
+      if (strpos($methodName, 'get') === 0 && $methodName !== 'getResponse') {
         echo '<p>' . $this->camelToSnake($methodName) . '</p>';
         echo '<pre>';
         print_r(call_user_func(array($this, $methodName)));
@@ -69,57 +76,31 @@ class Db {
   }
   
   public function getCurrentDatabase() {
-    $sqlText = $this->queries->get('get_current_database');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchColumn();
+   return $this->getResponse('get_current_database');
   }
 
   public function getCustomer() {
-    $sqlText = $this->queries->get('get_customer');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
+   return $this->getResponse('get_customer');
   }
-
+ 
   public function getAllSalespeople() {
-    $sqlText = $this->queries->get('get_all_salespeople');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
+    return $this->getResponse('get_all_salespeople');
   }
 
   public function getSalespeopleInfo() {
-    $sqlText = $this->queries->get('get_salespeople_info');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
+    return $this->getResponse('get_salespeople_info');
   }
 
   public function getAllOrders() {
-    $sqlText = $this->queries->get('get_all_orders');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
+    return $this->getResponse('get_all_orders');
   }
 
   public function getShuffleOrders() {
-    $sqlText = $this->queries->get('get_shuffle_orders');
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
+    return $this->getResponse('get_shuffle_orders');
   }
  
 }
 
-$Db = Db::create();
-$Db->runSqlQueries();
+$db = Db::create();
+$db->runSqlQueries();
 ?>
-<!--
-getAllSalespeople превращается в Get all salespeople
-getSalespeopleInfo превращается в Get salespeople info
-
-сначала просто имя метода как есть
-потом погугли как преобразовать строку из camelCase в underscoreCase 
-и сделать первую букву в имени метода заглавной
--->
