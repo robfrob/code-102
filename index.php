@@ -41,11 +41,26 @@ class Db {
     return $Db;
   }
 
+  private function camelToSnake($camelCase) {
+    $snakeCase = '';
+
+    for ($i = 0; $i < strlen($camelCase); $i++) { 
+        if (ctype_upper($camelCase[$i])) { 
+          $snakeCase .= '_' . strtolower($camelCase[$i]); 
+        } else { 
+          $snakeCase.= $camelCase[$i]; 
+        } 
+    } 
+
+    $snakeCase = ltrim($snakeCase, '_');
+    return ucfirst($snakeCase); 
+  }
+
   public function runSqlQueries() {
     $classMethods = get_class_methods($this);
     foreach ($classMethods as $methodName) {
       if (strpos($methodName, 'get') === 0) {    // нас интересуют только геттеры
-        echo '<p>' . $methodName . '</p>';
+        echo '<p>' . $this->camelToSnake($methodName) . '</p>';
         echo '<pre>';
         print_r(call_user_func(array($this, $methodName)));
         echo '</pre>';
