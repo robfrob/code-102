@@ -5,16 +5,16 @@
 
 class Queries {
 
-  private array $queries; 
+  private $queries = []; 
 
   public function __construct() {
     $this->queries = [
-      'get_current_database' => 'select current_database()',  
-      'get_customer' => 'select * from customers limit 1',
-      'get_all_salespeople' => 'select * from salespeople',
-      'get_salespeople_info' => 'select sname, comm from salespeople',
-      'get_all_orders' => 'select * from orders',
-      'get_shuffle_orders' => 'select odate, snum, onum, amt from orders',
+      'select_current_database' => 'select current_database()',  
+      'select_customer' => 'select * from customers limit 1',
+      'select_all_salespeople' => 'select * from salespeople',
+      'select_salespeople_info' => 'select sname, comm from salespeople',
+      'select_all_orders' => 'select * from orders',
+      'select_shuffle_orders' => 'select odate, snum, onum, amt from orders',
     ];
   }
   
@@ -37,8 +37,8 @@ class Db {
     $dsn = getenv('PG_DSN');
     $pdo = new PDO($dsn); 
     $queries = new Queries();
-    $Db = new Db($pdo, $queries);          
-    return $Db;
+    $db = new Db($pdo, $queries);          
+    return $db;
   }
 
   private function camelToSnake($camelCase) {
@@ -56,7 +56,7 @@ class Db {
     return ucfirst($snakeCase); 
   }
 
-  private function getResponse($sqlQuery) {
+  private function Select($sqlQuery) {
     $sqlText = $this->queries->get($sqlQuery);
     $statement = $this->pdo->query($sqlText);
     $statement->execute();
@@ -66,7 +66,7 @@ class Db {
   public function runSqlQueries() {
     $classMethods = get_class_methods($this);
     foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'get') === 0 && $methodName !== 'getResponse') {
+      if (strpos($methodName, 'select') === 0 && $methodName !== 'Select') {
         echo '<p>' . $this->camelToSnake($methodName) . '</p>';
         echo '<pre>';
         print_r(call_user_func(array($this, $methodName)));
@@ -74,33 +74,41 @@ class Db {
       }
     }
   }
-  
-  public function getCurrentDatabase() {
-   return $this->getResponse('get_current_database');
+
+  public function listSelectMethods() {
+    
   }
 
-  public function getCustomer() {
-   return $this->getResponse('get_customer');
+  public function renderSqlQueries() {
+    
+  }
+  
+  public function selectCurrentDatabase() {
+   return $this->Select('select_current_database');
+  }
+
+  public function selectCustomer() {
+   return $this->Select('select_customer');
   }
  
-  public function getAllSalespeople() {
-    return $this->getResponse('get_all_salespeople');
+  public function selectAllSalespeople() {
+    return $this->Select('select_all_salespeople');
   }
 
-  public function getSalespeopleInfo() {
-    return $this->getResponse('get_salespeople_info');
+  public function selectSalespeopleInfo() {
+    return $this->Select('select_salespeople_info');
   }
 
-  public function getAllOrders() {
-    return $this->getResponse('get_all_orders');
+  public function selectAllOrders() {
+    return $this->Select('select_all_orders');
   }
 
-  public function getShuffleOrders() {
-    return $this->getResponse('get_shuffle_orders');
+  public function selectShuffleOrders() {
+    return $this->Select('select_shuffle_orders');
   }
  
 }
 
 $db = Db::create();
 $db->runSqlQueries();
-?>
+$db->renderSqlQueries()
