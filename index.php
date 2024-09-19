@@ -41,7 +41,71 @@ class Db {
     return $db;
   }
 
-  private function convertCamelCaseToSnakeCase($camelCase) {
+  private function select($sqlQuery) {
+    $sqlText = $this->queries->get($sqlQuery);
+    $statement = $this->pdo->query($sqlText);
+    $statement->execute();
+    return $statement->fetchAll();
+  }
+
+  private function listOfSelectMethods() {
+    $listOfSelectMethods = [];
+    $classMethods = get_class_methods($this);
+    foreach ($classMethods as $methodName) {
+      if (strpos($methodName, 'select') === 0 && $methodName !== 'select') { 
+          $listOfSelectMethods[] = $methodName;
+      }
+    }
+    return $listOfSelectMethods;
+  }
+
+  public function echoSelectMethod($methodName, $methodResult) { 
+  ?>
+    <p>
+      <?php print_r(StringUtil::convertCamelCaseToSnakeCase($methodName));?>
+    </p>
+    <pre>
+      <?php print_r(call_user_func(array($this, $methodName)));?>
+    </pre>
+  <?php
+  }
+  
+  public function runSqlQueries() {
+    foreach ($this->listOfSelectMethods() as $methodName) {
+      $methodResult = call_user_func(array($this, $methodName));
+      $this->echoSelectMethod($methodName, $methodResult);
+    }
+  }
+
+  public function selectCurrentDatabase() {
+   return $this->select('select_current_database');
+  }
+
+  public function selectCustomer() {
+   return $this->select('select_customer');
+  }
+ 
+  public function selectAllSalespeople() {
+    return $this->select('select_all_salespeople');
+  }
+
+  public function selectSalespeopleInfo() {
+    return $this->select('select_salespeople_info');
+  }
+
+  public function selectAllOrders() {
+    return $this->select('select_all_orders');
+  }
+
+  public function selectShuffleOrders() {
+    return $this->select('select_shuffle_orders');
+  }
+ 
+}
+
+class StringUtil {
+  
+  public static function convertCamelCaseToSnakeCase($camelCase) {
     $snakeCase = '';
 
     for ($i = 0; $i < strlen($camelCase); $i++) { 
@@ -55,57 +119,6 @@ class Db {
     $snakeCase = ltrim($snakeCase, ' ');
     return ucfirst($snakeCase); 
   }
-
-  private function Select($sqlQuery) {
-    $sqlText = $this->queries->get($sqlQuery);
-    $statement = $this->pdo->query($sqlText);
-    $statement->execute();
-    return $statement->fetchAll();
-  }
-
-  public function listOfSelectMethods() {
-    $listOfSelectMethods = [];
-    $classMethods = get_class_methods($this);
-    foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'select') === 0 && $methodName !== 'Select') { 
-          $listOfSelectMethods[] = $methodName;
-      }
-    }
-    return $listOfSelectMethods;
-  }
-  
-  public function runSqlQueries() {
-    foreach ($this->listOfSelectMethods() as $methodName) { ?>
-      <p><?php print_r($this->convertCamelCaseToSnakeCase($methodName));?></p>
-      <pre><?php print_r(call_user_func(array($this, $methodName)));?></pre>
-      <?php
-    }
-  }
-
-  public function selectCurrentDatabase() {
-   return $this->Select('select_current_database');
-  }
-
-  public function selectCustomer() {
-   return $this->Select('select_customer');
-  }
- 
-  public function selectAllSalespeople() {
-    return $this->Select('select_all_salespeople');
-  }
-
-  public function selectSalespeopleInfo() {
-    return $this->Select('select_salespeople_info');
-  }
-
-  public function selectAllOrders() {
-    return $this->Select('select_all_orders');
-  }
-
-  public function selectShuffleOrders() {
-    return $this->Select('select_shuffle_orders');
-  }
- 
 }
 
 $db = Db::create();
