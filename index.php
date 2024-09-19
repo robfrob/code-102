@@ -75,13 +75,23 @@ class Db {
     }
   }
 
-  public function listSelectMethods() {
-    
+  public function listOfSelectMethods() {
+    $listOfSelectMethods = [];
+    $classMethods = get_class_methods($this);
+    foreach ($classMethods as $methodName) {
+      if (strpos($methodName, 'select') === 0 && $methodName !== 'Select') { 
+        $result[] = $methodName;
+      }
+    }
+    return $listOfSelectMethods;
   }
 
-  public function renderSqlQueries() {
-    
-  }
+  // public function renderSqlQueries() {
+  //   echo '<p>' . $this->camelToSnake($methodName) . '</p>';
+  //   echo '<pre>';
+  //   print_r(call_user_func(array($this, $methodName)));
+  //   echo '</pre>';
+  // }
   
   public function selectCurrentDatabase() {
    return $this->Select('select_current_database');
@@ -110,5 +120,7 @@ class Db {
 }
 
 $db = Db::create();
-$db->runSqlQueries();
-$db->renderSqlQueries()
+//$db->runSqlQueries();
+//$db->renderSqlQueries();
+
+$db->listSelectMethods();
