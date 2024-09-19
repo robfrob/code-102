@@ -41,7 +41,7 @@ class Db {
     return $db;
   }
 
-  private function camelToSnake($camelCase) {
+  private function convertCamelCaseToSnakeCase($camelCase) {
     $snakeCase = '';
 
     for ($i = 0; $i < strlen($camelCase); $i++) { 
@@ -63,36 +63,25 @@ class Db {
     return $statement->fetchAll();
   }
 
-  public function runSqlQueries() {
-    $classMethods = get_class_methods($this);
-    foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'select') === 0 && $methodName !== 'Select') {
-        echo '<p>' . $this->camelToSnake($methodName) . '</p>';
-        echo '<pre>';
-        print_r(call_user_func(array($this, $methodName)));
-        echo '</pre>';
-      }
-    }
-  }
-
   public function listOfSelectMethods() {
     $listOfSelectMethods = [];
     $classMethods = get_class_methods($this);
     foreach ($classMethods as $methodName) {
       if (strpos($methodName, 'select') === 0 && $methodName !== 'Select') { 
-        $result[] = $methodName;
+          $listOfSelectMethods[] = $methodName;
       }
     }
     return $listOfSelectMethods;
   }
-
-  // public function renderSqlQueries() {
-  //   echo '<p>' . $this->camelToSnake($methodName) . '</p>';
-  //   echo '<pre>';
-  //   print_r(call_user_func(array($this, $methodName)));
-  //   echo '</pre>';
-  // }
   
+  public function runSqlQueries() {
+    foreach ($this->listOfSelectMethods() as $methodName) { ?>
+      <p><?php print_r($this->convertCamelCaseToSnakeCase($methodName));?></p>
+      <pre><?php print_r(call_user_func(array($this, $methodName)));?></pre>
+      <?php
+    }
+  }
+
   public function selectCurrentDatabase() {
    return $this->Select('select_current_database');
   }
@@ -120,7 +109,4 @@ class Db {
 }
 
 $db = Db::create();
-//$db->runSqlQueries();
-//$db->renderSqlQueries();
-
-$db->listSelectMethods();
+$db->runSqlQueries();
