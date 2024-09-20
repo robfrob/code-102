@@ -41,10 +41,10 @@ class Db {
   private function echoSelectMethod($methodName, $methodResult) { 
   ?>
     <p>
-      <?php print_r(StringUtil::convertCamelCaseToSnakeCase($methodName));?>
+      <?php print(StringUtil::convertCamelCaseToSnakeCase($methodName));?>
     </p>
     <pre>
-      <?php print_r(call_user_func(array($this, $methodName)));?>
+      <?php print_r($methodResult);?>
     </pre>
   <?php
   }
