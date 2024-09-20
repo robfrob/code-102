@@ -27,22 +27,12 @@ class Db {
     return $statement->fetchAll();
   }
 
-  // private function listOfSelectMethods() {
-  //   $listOfSelectMethods = [];
-  //   $classMethods = get_class_methods($this);
-  //   foreach ($classMethods as $methodName) {
-  //     if (strpos($methodName, 'select') === 0 && $methodName !== 'select') { 
-  //         $listOfSelectMethods[] = $methodName;
-  //     }
-  //   }
-  //   return $listOfSelectMethods;
-  // }
-  
   private function listOfSelectMethods() {
     $classMethods = get_class_methods($this);
     return array_values(array_filter(
       $classMethods,
-      fn($methodName) => strpos($methodName, 'select') === 0 && $methodName !== 'select'));
+      fn($methodName) => strpos($methodName, 'select') === 0 && $methodName !== 'select'
+    ));
   }
 
   private function echoSelectMethod($methodName, $methodResult) { 
