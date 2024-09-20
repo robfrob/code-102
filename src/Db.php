@@ -27,15 +27,22 @@ class Db {
     return $statement->fetchAll();
   }
 
+  // private function listOfSelectMethods() {
+  //   $listOfSelectMethods = [];
+  //   $classMethods = get_class_methods($this);
+  //   foreach ($classMethods as $methodName) {
+  //     if (strpos($methodName, 'select') === 0 && $methodName !== 'select') { 
+  //         $listOfSelectMethods[] = $methodName;
+  //     }
+  //   }
+  //   return $listOfSelectMethods;
+  // }
+  
   private function listOfSelectMethods() {
-    $listOfSelectMethods = [];
     $classMethods = get_class_methods($this);
-    foreach ($classMethods as $methodName) {
-      if (strpos($methodName, 'select') === 0 && $methodName !== 'select') { 
-          $listOfSelectMethods[] = $methodName;
-      }
-    }
-    return $listOfSelectMethods;
+    return array_values(array_filter(
+      $classMethods,
+      fn($methodName) => strpos($methodName, 'select') === 0 && $methodName !== 'select'));
   }
 
   private function echoSelectMethod($methodName, $methodResult) { 
@@ -51,7 +58,7 @@ class Db {
 
   public function runSqlQueries() {
     foreach ($this->listOfSelectMethods() as $methodName) {
-      $methodResult = call_user_func(array($this, $methodName));
+      $methodResult = call_user_func([$this, $methodName]);
       $this->echoSelectMethod($methodName, $methodResult);
     }
   }
