@@ -39,10 +39,11 @@ class Runner
     public function listSelectors()
     {
         // https://www.hashbangcode.com/article/introduction-object-reflection-php
+        // https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class
+	// https://www.php.net/manual/en/language.types.boolean.php#language.types.boolean.casting
         $refObject = new ReflectionObject($this->db);
         return array_filter(
             $refObject->getMethods(),
-            // https://www.php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class
             fn($refMethod) => $refMethod->getAttributes(Selector::class)
         );
     }
