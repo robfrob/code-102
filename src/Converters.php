@@ -2,9 +2,9 @@
 
 namespace Telema;
 
-class StringUtil {
+class Converters {
 
-  public static function convertCamelCaseToSnakeCase($camelCase) {
+  public static function camelToSnake($camelCase) {
     $snakeCase = '';
 
     for ($i = 0; $i < strlen($camelCase); $i++) { 
